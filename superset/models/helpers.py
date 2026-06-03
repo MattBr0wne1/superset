@@ -27,7 +27,7 @@ import re
 import uuid
 from collections.abc import Hashable, Iterator
 from contextlib import contextmanager
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import (
     Any,
     Callable,
@@ -2473,7 +2473,7 @@ class ExploreMixin:  # pylint: disable=too-many-public-methods
             ):
                 value = db_engine_spec.convert_dttm(
                     target_type=target_native_type,
-                    dttm=datetime.utcfromtimestamp(value / 1000),
+                    dttm=datetime.fromtimestamp(value / 1000, tz=timezone.utc),
                     db_extra=db_extra,
                 )
                 value = literal_column(value)
@@ -2700,7 +2700,10 @@ class ExploreMixin:  # pylint: disable=too-many-public-methods
 
         if tf:
             if tf in {"epoch_ms", "epoch_s"}:
-                seconds_since_epoch = int(dttm.timestamp())
+                aware_dttm = (
+                    dttm.replace(tzinfo=timezone.utc) if dttm.tzinfo is None else dttm
+                )
+                seconds_since_epoch = int(aware_dttm.timestamp())
                 if tf == "epoch_s":
                     return str(seconds_since_epoch)
                 return str(seconds_since_epoch * 1000)
