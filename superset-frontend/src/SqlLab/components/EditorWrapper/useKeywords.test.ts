@@ -87,6 +87,7 @@ beforeEach(() => {
         {
           options: fakeTableApiResult.result,
           hasMore: false,
+          totalCount: fakeTableApiResult.result.length,
         },
       ),
     );
