@@ -63,11 +63,13 @@ const fakeSchemaApiResult = ['schema1', 'schema2'];
 const expectedData = {
   options: fakeApiResult.result,
   hasMore: false,
+  totalCount: 2,
 };
 
 const expectedHasMoreData = {
   options: fakeHasMoreApiResult.result,
   hasMore: true,
+  totalCount: 4,
 };
 
 // eslint-disable-next-line no-restricted-globals -- TODO: Migrate from describe blocks

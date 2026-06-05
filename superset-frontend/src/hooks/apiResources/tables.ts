@@ -48,6 +48,7 @@ type QueryResponse = {
 export type Data = {
   options: Table[];
   hasMore: boolean;
+  totalCount: number;
 };
 
 export type FetchTablesQueryParams = {
@@ -115,6 +116,7 @@ const tableApi = api.injectEndpoints({
         transformResponse: ({ json }: QueryResponse) => ({
           options: json.result,
           hasMore: json.count > json.result.length,
+          totalCount: json.count,
         }),
       }),
       serializeQueryArgs: ({ queryArgs: { dbId, schema } }) => ({

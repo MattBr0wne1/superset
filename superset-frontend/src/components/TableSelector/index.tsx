@@ -29,6 +29,7 @@ import { t } from '@apache-superset/core/translation';
 import { SupersetError } from '@superset-ui/core';
 import { styled } from '@apache-superset/core/theme';
 import { CertifiedBadge, Select } from '@superset-ui/core/components';
+import { Alert } from '@apache-superset/core/components';
 import { DatabaseSelector, ErrorMessageWithStackTrace } from 'src/components';
 import { Icons } from '@superset-ui/core/components/Icons';
 import type { DatabaseObject } from 'src/components/DatabaseSelector/types';
@@ -339,6 +340,15 @@ const TableSelector: FunctionComponent<TableSelectorProps> = ({
       <>
         <StyledFormLabel>{label}</StyledFormLabel>
         {renderSelectRow(select, refreshLabel)}
+        {data?.hasMore && (
+          <Alert type="warning" closable={false}>
+            {t(
+              'Showing %s of %s tables. Search to find additional tables.',
+              data.options.length,
+              data.totalCount,
+            )}
+          </Alert>
+        )}
       </>
     );
   }

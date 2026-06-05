@@ -306,6 +306,55 @@ test('calls onTableSelectChange for schema-less database without schema', async 
   );
 }, 15000);
 
+test('shows truncation warning when hasMore is true', async () => {
+  fetchMock.get(catalogApiRoute, { result: [] });
+  fetchMock.get(schemaApiRoute, { result: ['test_schema'] });
+  fetchMock.get(tablesApiRoute, {
+    count: 10,
+    result: [
+      { label: 'table_a', value: 'table_a' },
+      { label: 'table_b', value: 'table_b' },
+    ],
+  });
+
+  const props = createProps();
+  render(<TableSelector {...props} />, { useRedux: true, store });
+
+  await waitFor(
+    () => {
+      expect(screen.getByRole('alert')).toBeInTheDocument();
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        'Showing 2 of 10 tables',
+      );
+    },
+    { timeout: 10000 },
+  );
+}, 15000);
+
+test('does not show truncation warning when hasMore is false', async () => {
+  fetchMock.get(catalogApiRoute, { result: [] });
+  fetchMock.get(schemaApiRoute, { result: ['test_schema'] });
+  fetchMock.get(tablesApiRoute, getTableMockFunction());
+
+  const props = createProps();
+  render(<TableSelector {...props} />, { useRedux: true, store });
+
+  const tableSelect = screen.getByRole('combobox', {
+    name: 'Select table or type to search tables',
+  });
+  await waitFor(() => {
+    expect(tableSelect).toBeInTheDocument();
+  });
+
+  // Wait a tick to ensure data has loaded
+  await waitFor(
+    () => {
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    },
+    { timeout: 10000 },
+  );
+}, 15000);
+
 test('TableOption renders correct icons for different table types', () => {
   // Test regular table
   const tableTable = {
