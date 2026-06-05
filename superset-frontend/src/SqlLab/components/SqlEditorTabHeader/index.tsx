@@ -252,7 +252,7 @@ const SqlEditorTabHeader: FC<Props> = ({ queryEditor }) => {
         show={isRenameModalOpen}
         onHide={closeRenameModal}
         name={t('Rename tab')}
-        title={t('Rename tab')}
+        title={t('Enter a new title for the tab')}
         disablePrimaryButton={!tabTitle}
         onHandledPrimaryAction={handleRename}
         primaryButtonName={t('Save')}
